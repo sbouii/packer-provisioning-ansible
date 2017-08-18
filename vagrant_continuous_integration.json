@@ -1,0 +1,57 @@
+{
+    "builders":[{
+        "type": "virtualbox-iso",
+        "guest_os_type": "Ubuntu_64",
+        "boot_wait": "10s",
+        "disk_size": 1200,
+        "iso_urls": [
+        "iso/ubuntu-14.04.1-server-amd64.iso",
+        "http://old-releases.ubuntu.com/releases/14.04.1/ubuntu-14.04.1-server-amd64.iso"
+        ],
+        "ssh_username": "vagrant",
+        "ssh_password": "vagrant",
+        "ssh_port": 22,
+        "ssh_wait_timeout": "10000s",
+        "virtualbox_version_file": ".vbox_version",
+        "vm_name": "packer-ubuntu-14.04-amd64",
+        "vboxmanage": [
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--memory",
+          "512"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--cpus",
+          "1"
+        ]
+      ]
+       
+    }],
+    "provisioners":[
+        {
+            "type": "shell",
+            "inline": [
+              "apt-get -y update",
+              "apt-get install -y software-properties-common",
+              "apt-add-repository ppa:ansible/ansible",
+              "apt-get -y update",
+              "apt-get install -y ansible"
+            ],
+            "type": "ansible-local",
+            "playbook_file": "ansible/provision_continuous_integration.yml",
+            "galaxy_file": "ansible/requirements_continuous_integration.yml"
+        }
+    ],
+    "post-processors": [
+        {
+            "type": "vagrant",
+            "repository": "sbouii/ubuntu-1604-ansible",
+            "tag": "0.1"
+        }
+    ]
+}
+
+

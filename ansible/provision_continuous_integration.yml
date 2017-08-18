@@ -1,0 +1,12 @@
+- hosts: localhost
+  roles:
+    - { role: geerlingguy.java }
+    - { role: karlmdavis.jenkins2, jenkins_plugins_extra: github-oauth }
+  tasks:
+  - name: Install git
+    sudo: yes
+    apt:
+     name: git
+     state: installed
+     update_cache: yes
+

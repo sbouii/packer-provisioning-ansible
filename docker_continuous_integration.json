@@ -1,0 +1,29 @@
+{
+    "builders":[{
+        "type": "docker",
+        "image": "ubuntu:16.04",
+        "commit": true
+    }],
+    "provisioners":[
+        {
+            "type": "shell",
+	    "inline": [
+              "apt-get -y update",
+              "apt-get install -y software-properties-common",
+              "apt-add-repository ppa:ansible/ansible",
+              "apt-get -y update",
+              "apt-get install -y ansible"
+            ],
+            "type": "ansible-local",
+            "playbook_file": "ansible/provision_continuous_integration.yml",
+            "galaxy_file": "ansible/requirements_continuous_integration.yml"
+        }
+    ],
+    "post-processors": [
+        {
+            "type": "docker-import",
+            "repository": "sbouii/ubuntu-1604-ansible",
+            "tag": "0.1"
+        }
+    ]
+}
